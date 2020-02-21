@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZLReorderTableView'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'Using long press gesture to reorder cells in tableview.'
   s.homepage         = 'https://github.com/desolateug/ZLReorderTableView'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
