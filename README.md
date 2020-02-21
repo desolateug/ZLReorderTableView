@@ -27,6 +27,9 @@ self.tableView.dataSource = self;
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+## Snapshoot
+![snapshoot1](https://github.com/desolateug/ZLReorderTableView/blob/master/Example/Snapshoot/snapshoot1.gif)
+
 ## License
 
 ZLReorderTableView is available under the MIT license. See the LICENSE file for more info.
