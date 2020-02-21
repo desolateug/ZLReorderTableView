@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
 
 @property (nonatomic, assign) CGPoint pressPoint;
 @property (nonatomic, assign) CGPoint initialCenter;
+@property (nonatomic, strong) NSIndexPath *currentIndexPath;
 @property (nonatomic, strong) NSIndexPath *fromIndexPath;
 @property (nonatomic, strong) CADisplayLink *displayLink;
 @property (nonatomic, assign) ZLTableViewScrollDirection scrollDirection;
@@ -135,12 +136,12 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
                 return NSOrderedDescending;
             }];
             NSIndexPath *lastIndexPath = upIndexPaths.lastObject;
-            if (![lastIndexPath isEqual:self.fromIndexPath]) {
+            if (![lastIndexPath isEqual:self.currentIndexPath]) {
                 toIndexPath = [NSIndexPath indexPathForRow:lastIndexPath.row+1 inSection:lastIndexPath.section];
             }
         }
     }
-    if (toIndexPath && ![toIndexPath isEqual:self.fromIndexPath]) {
+    if (toIndexPath && ![toIndexPath isEqual:self.currentIndexPath]) {
         [self moveToNewIndexPath:toIndexPath];
     }
 }
@@ -154,7 +155,7 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
 
 - (BOOL)canMoveToNewIndexPath:(NSIndexPath *)toIndexPath {
     if ([self.dataSource respondsToSelector:@selector(zl_tableView:canMoveRowAtIndexPath:toIndexPath:)]) {
-        return [self.dataSource zl_tableView:self canMoveRowAtIndexPath:self.fromIndexPath toIndexPath:toIndexPath];
+        return [self.dataSource zl_tableView:self canMoveRowAtIndexPath:self.currentIndexPath toIndexPath:toIndexPath];
     }
     return YES;
 }
@@ -165,13 +166,13 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
     }
     NSInteger sectionsOld = [self.dataSource numberOfSectionsInTableView:self];
     if ([self.dataSource respondsToSelector:@selector(zl_tableView:moveRowAtIndexPath:toIndexPath:)]) {
-        [self.dataSource zl_tableView:self moveRowAtIndexPath:self.fromIndexPath toIndexPath:toIndexPath];
+        [self.dataSource zl_tableView:self moveRowAtIndexPath:self.currentIndexPath toIndexPath:toIndexPath];
     }
     NSInteger sectionsNow = [self.dataSource numberOfSectionsInTableView:self];
     // 回调里可能修改了数据源，此处需要校验
     if (sectionsOld == sectionsNow) {
-        [self moveRowAtIndexPath:self.fromIndexPath toIndexPath:toIndexPath];
-        self.fromIndexPath = toIndexPath;
+        [self moveRowAtIndexPath:self.currentIndexPath toIndexPath:toIndexPath];
+        self.currentIndexPath = toIndexPath;
     } else {
         [self reloadData];
     }
@@ -179,6 +180,7 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
 
 - (void)startMovingCellAtIndexPath:(NSIndexPath *)indexPath {
     self.isReordering = YES;
+    self.currentIndexPath = indexPath;
     self.fromIndexPath = indexPath;
     if ([self.delegate respondsToSelector:@selector(zl_tableView:willMoveRowAtIndexPath:)]) {
         [self.delegate zl_tableView:self willMoveRowAtIndexPath:indexPath];
@@ -194,11 +196,11 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
 }
 
 - (void)endMovingCell {
-    if (!self.fromIndexPath || !self.snapshot) {
+    if (!self.currentIndexPath || !self.snapshot) {
         return;
     }
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    UITableViewCell *cell = [self cellForRowAtIndexPath:self.fromIndexPath];
+    UITableViewCell *cell = [self cellForRowAtIndexPath:self.currentIndexPath];
     [UIView animateWithDuration:0.25 animations:^{
         self.snapshot.transform = CGAffineTransformIdentity;
         // 容错
@@ -211,13 +213,13 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
     } completion:^(BOOL finished) {
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         cell.hidden = NO;
+        if ([self.delegate respondsToSelector:@selector(zl_tableView:didMoveRowAtIndexPath:toIndexPath:)]) {
+            [self.delegate zl_tableView:self didMoveRowAtIndexPath:self.fromIndexPath toIndexPath:self.currentIndexPath];
+        }
         [self.snapshot removeFromSuperview];
         self.snapshot = nil;
-        self.fromIndexPath = nil;
+        self.currentIndexPath = nil;
         self.isReordering = NO;
-        if ([self.delegate respondsToSelector:@selector(zl_tableView:didMoveRowAtIndexPath:)]) {
-            [self.delegate zl_tableView:self didMoveRowAtIndexPath:self.fromIndexPath];
-        }
     }];
 }
 
@@ -292,7 +294,7 @@ typedef NS_ENUM(NSUInteger, ZLTableViewScrollDirection) {
     // 由于tableView复用机制，此处需重置隐藏状态
     [self.visibleCells enumerateObjectsUsingBlock:^(__kindof UITableViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         NSIndexPath *indexPath = [self indexPathForCell:cell];
-        cell.hidden = [indexPath compare:self.fromIndexPath] == NSOrderedSame;
+        cell.hidden = [indexPath isEqual:self.currentIndexPath];
     }];
 }
 

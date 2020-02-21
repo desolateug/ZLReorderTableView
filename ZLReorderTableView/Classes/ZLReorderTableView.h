@@ -19,18 +19,19 @@
 
 /**
  结束移动
- @param indexPath 新位置
+ @param indexPath 初始位置
+ @param toIndexPath 结束移动时的位置
  */
-- (void)zl_tableView:(ZLReorderTableView *)tableView didMoveRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)zl_tableView:(ZLReorderTableView *)tableView didMoveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
 @end
 
 @protocol ZLReorderTableViewDataSource <UITableViewDataSource>
 
 /**
- 移动cell到指定位置
+ 移动cell到指定位置，在此方法中实现对tableView数据源的修改
  @param indexPath 初始位置
- @param toIndexPath 新位置
+ @param toIndexPath 移动过程中的新位置
  */
 - (void)zl_tableView:(ZLReorderTableView *)tableView moveRowAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath;
 
@@ -42,7 +43,7 @@
 - (BOOL)zl_tableView:(ZLReorderTableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- 是否允许移动cell到指定位置，只对indexPath.row==0的cell有意义，默认YES
+ 是否允许移动cell到指定位置，默认YES
  @param indexPath 初始位置
  @param toIndexPath 新位置
  */
