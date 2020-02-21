@@ -5,12 +5,6 @@
 [![License](https://img.shields.io/cocoapods/l/ZLReorderTableView.svg?style=flat)](https://cocoapods.org/pods/ZLReorderTableView)
 [![Platform](https://img.shields.io/cocoapods/p/ZLReorderTableView.svg?style=flat)](https://cocoapods.org/pods/ZLReorderTableView)
 
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-## Requirements
-
 ## Installation
 
 ZLReorderTableView is available through [CocoaPods](https://cocoapods.org). To install
@@ -19,6 +13,19 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'ZLReorderTableView'
 ```
+
+## Usage
+```objc
+
+self.tableView.enableReorder = YES;
+self.tableView.delegate = self;
+self.tableView.dataSource = self;
+
+```
+
+## Example
+
+To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## License
 
