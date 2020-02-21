@@ -1,0 +1,16 @@
+PODS:
+  - ZLReorderTableView (0.1.0)
+
+DEPENDENCIES:
+  - ZLReorderTableView (from `../`)
+
+EXTERNAL SOURCES:
+  ZLReorderTableView:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ZLReorderTableView: d387c8f284b0cbe6e12d377d799348e641bcf072
+
+PODFILE CHECKSUM: 1d613906df9c629cf0cb358224548ccf041b3eb0
+
+COCOAPODS: 1.8.4

@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'ZLReorderTableView_Example' do
+  pod 'ZLReorderTableView', :path => '../'
+
+  target 'ZLReorderTableView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
