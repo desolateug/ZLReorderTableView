@@ -5,6 +5,9 @@
 [![License](https://img.shields.io/cocoapods/l/ZLReorderTableView.svg?style=flat)](https://cocoapods.org/pods/ZLReorderTableView)
 [![Platform](https://img.shields.io/cocoapods/p/ZLReorderTableView.svg?style=flat)](https://cocoapods.org/pods/ZLReorderTableView)
 
+## Description
+This pod is used to reoder tableview interactively by implements the drag and drop function of cells.
+
 ## Installation
 
 ZLReorderTableView is available through [CocoaPods](https://cocoapods.org). To install
